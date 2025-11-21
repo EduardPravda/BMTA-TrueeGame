@@ -10,23 +10,21 @@ import cz.pravda.trueegame.R
 import cz.pravda.trueegame.data.AppDatabase
 import cz.pravda.trueegame.data.MemoryCard
 import cz.pravda.trueegame.data.Score
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import android.util.Log
 
-// Změna: Dědíme z AndroidViewModel, abychom měli přístup k databázi
 class MemoryGameViewModel(application: Application) : AndroidViewModel(application) {
 
-    // --- DATABÁZE ---
     private val database = AppDatabase.getDatabase(application)
     private val scoreDao = database.scoreDao()
 
-    // LiveData s nejlepším skóre (čte se samo z databáze)
     val bestScore: LiveData<Int?> = scoreDao.getBestScore().asLiveData()
-    // ----------------
+    // <--- NOVÉ: Sledujeme poslední hru
+    val lastGame: LiveData<Score?> = scoreDao.getLastGame().asLiveData()
 
     private val images = listOf(
-        R.drawable.ic_30, // Tady si nech své ikonky!
+        R.drawable.ic_30, // Zde nech své ikonky
         R.drawable.ic_3g,
         R.drawable.ic_4g,
         R.drawable.ic_5g,
@@ -42,19 +40,33 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     private val _moves = MutableLiveData<Int>(0)
     val moves: LiveData<Int> = _moves
 
+    // <--- NOVÉ: LiveData pro čas
+    private val _timeSeconds = MutableLiveData<Long>(0)
+    val timeSeconds: LiveData<Long> = _timeSeconds
+
     private var indexOfSingleSelectedCard: Int? = null
     private var isWaiting = false
-    private var pairsMatched = 0 // Počítadlo hotových párů
+    private var pairsMatched = 0
+
+    // <--- NOVÉ: Proměnná pro stopky
+    private var timerJob: Job? = null
+    private var isGameRunning = false
 
     init {
         resetGame()
     }
 
     fun resetGame() {
+        // Reset hodnot
         _moves.value = 0
+        _timeSeconds.value = 0
         pairsMatched = 0
         indexOfSingleSelectedCard = null
         isWaiting = false
+
+        // Zastavení starého časovače a spuštění nového
+        stopTimer()
+        startTimer()
 
         val chosenImages = images.take(8)
         val randomizedImages = (chosenImages + chosenImages).shuffled()
@@ -62,8 +74,23 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         val newCards = randomizedImages.mapIndexed { index, imageId ->
             MemoryCard(id = index, imageId = imageId)
         }
-
         _cards.value = newCards
+    }
+
+    // <--- NOVÉ: Funkce pro stopky
+    private fun startTimer() {
+        isGameRunning = true
+        timerJob = viewModelScope.launch {
+            while (isGameRunning) {
+                delay(1000) // Počkáme 1 sekundu
+                _timeSeconds.value = (_timeSeconds.value ?: 0) + 1
+            }
+        }
+    }
+
+    private fun stopTimer() {
+        isGameRunning = false
+        timerJob?.cancel()
     }
 
     fun flipCard(position: Int) {
@@ -86,24 +113,17 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-// ... uvnitř třídy MemoryGameViewModel ...
-
     private fun checkForMatch(pos1: Int, pos2: Int, currentCards: MutableList<MemoryCard>) {
         if (currentCards[pos1].imageId == currentCards[pos2].imageId) {
-            // SHODA!
             currentCards[pos1].isMatched = true
             currentCards[pos2].isMatched = true
             _cards.value = currentCards
-
             pairsMatched++
-            Log.d("PexesoDebug", "Nalezen pár! Celkem hotovo: $pairsMatched / 8") // <--- LOG
 
-            // Pokud máme 8 párů, je konec hry -> ULOŽIT DO DB
             if (pairsMatched == 8) {
-                Log.d("PexesoDebug", "HRA DOKONČENA! Volám saveScoreToDb()") // <--- LOG
+                stopTimer() // <--- Zastavíme čas
                 saveScoreToDb()
             }
-
         } else {
             isWaiting = true
             viewModelScope.launch {
@@ -118,15 +138,16 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun saveScoreToDb() {
         val currentMoves = _moves.value ?: 0
-        Log.d("PexesoDebug", "Ukládám skóre do DB: $currentMoves tahů") // <--- LOG
+        val currentTime = _timeSeconds.value ?: 0
 
         viewModelScope.launch {
-            try {
-                scoreDao.insert(Score(moves = currentMoves, timestamp = System.currentTimeMillis()))
-                Log.d("PexesoDebug", "Úspěšně vloženo do databáze!") // <--- LOG
-            } catch (e: Exception) {
-                Log.e("PexesoDebug", "Chyba při ukládání: ${e.message}") // <--- LOG CHYBY
-            }
+            scoreDao.insert(
+                Score(
+                    moves = currentMoves,
+                    timeSeconds = currentTime, // Ukládáme i čas
+                    timestamp = System.currentTimeMillis()
+                )
+            )
         }
     }
 }

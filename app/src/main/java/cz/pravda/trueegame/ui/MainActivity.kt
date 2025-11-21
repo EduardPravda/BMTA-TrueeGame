@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cz.pravda.trueegame.R
 import cz.pravda.trueegame.viewmodel.MemoryGameViewModel
-import android.util.Log // Pro logování
+import android.util.Log
 
 class MainActivity : AppCompatActivity() {
 
-    // Proměnné pro View prvky
     private lateinit var rvBoard: RecyclerView
     private lateinit var tvScore: TextView
-    private lateinit var tvBestScore: TextView // <--- NOVÉ: Proměnná pro rekord
+    private lateinit var tvBestScore: TextView
+    private lateinit var tvTimer: TextView    // <--- NOVÉ
+    private lateinit var tvLastGame: TextView // <--- NOVÉ
 
-    // Proměnné pro logiku
     private lateinit var viewModel: MemoryGameViewModel
     private lateinit var adapter: MemoryCardAdapter
 
@@ -25,44 +25,52 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Najdeme prvky na obrazovce
         rvBoard = findViewById(R.id.rv_board)
         tvScore = findViewById(R.id.tv_score)
-        tvBestScore = findViewById(R.id.tv_best_score) // <--- NOVÉ: Najdeme textové pole
+        tvBestScore = findViewById(R.id.tv_best_score)
+        tvTimer = findViewById(R.id.tv_timer)         // <--- NOVÉ
+        tvLastGame = findViewById(R.id.tv_last_game)  // <--- NOVÉ
 
-        // 2. Inicializujeme ViewModel (mozek hry)
         viewModel = ViewModelProvider(this)[MemoryGameViewModel::class.java]
 
-        // 3. Nastavíme Adapter
         adapter = MemoryCardAdapter(emptyList()) { position ->
             viewModel.flipCard(position)
         }
 
-        // 4. Nastavíme RecyclerView
         rvBoard.adapter = adapter
         rvBoard.layoutManager = GridLayoutManager(this, 4)
         rvBoard.setHasFixedSize(true)
 
-        // 5. Pozorování dat (Observer)
-
-        // Sledujeme seznam karet
+        // Sledování karet
         viewModel.cards.observe(this) { newCards ->
             adapter.updateData(newCards)
         }
 
-        // Sledujeme aktuální počet tahů
+        // Sledování tahů
         viewModel.moves.observe(this) { moves ->
             tvScore.text = "Tahů: $moves"
         }
 
-        // <--- NOVÉ: Sledujeme nejlepší skóre z databáze --->
-        viewModel.bestScore.observe(this) { best ->
-            Log.d("PexesoDebug", "Načteno High Score z DB: $best") // Log pro kontrolu
+        // <--- NOVÉ: Sledování času (formátujeme sekundy na 00:00)
+        viewModel.timeSeconds.observe(this) { seconds ->
+            val minutes = seconds / 60
+            val secs = seconds % 60
+            tvTimer.text = String.format("Čas: %02d:%02d", minutes, secs)
+        }
 
-            if (best != null && best > 0) {
-                tvBestScore.text = "Rekord: $best tahů"
+        // Sledování nejlepšího skóre
+        viewModel.bestScore.observe(this) { best ->
+            tvBestScore.text = if (best != null) "Rekord: $best tahů" else "Rekord: -"
+        }
+
+        // <--- NOVÉ: Sledování POSLEDNÍ hry
+        viewModel.lastGame.observe(this) { score ->
+            if (score != null) {
+                val minutes = score.timeSeconds / 60
+                val secs = score.timeSeconds % 60
+                tvLastGame.text = String.format("Minule: %d tahů (%02d:%02d)", score.moves, minutes, secs)
             } else {
-                tvBestScore.text = "Rekord: -"
+                tvLastGame.text = "Minule: -"
             }
         }
     }
