@@ -8,13 +8,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cz.pravda.trueegame.R
 import cz.pravda.trueegame.viewmodel.MemoryGameViewModel
-import com.google.android.material.snackbar.Snackbar // Pro zobrazení hlášky o výhře
+import android.util.Log // Pro logování
 
 class MainActivity : AppCompatActivity() {
 
     // Proměnné pro View prvky
     private lateinit var rvBoard: RecyclerView
     private lateinit var tvScore: TextView
+    private lateinit var tvBestScore: TextView // <--- NOVÉ: Proměnná pro rekord
 
     // Proměnné pro logiku
     private lateinit var viewModel: MemoryGameViewModel
@@ -27,32 +28,42 @@ class MainActivity : AppCompatActivity() {
         // 1. Najdeme prvky na obrazovce
         rvBoard = findViewById(R.id.rv_board)
         tvScore = findViewById(R.id.tv_score)
+        tvBestScore = findViewById(R.id.tv_best_score) // <--- NOVÉ: Najdeme textové pole
 
         // 2. Inicializujeme ViewModel (mozek hry)
         viewModel = ViewModelProvider(this)[MemoryGameViewModel::class.java]
 
-        // 3. Nastavíme Adapter (prázdný seznam na začátek)
+        // 3. Nastavíme Adapter
         adapter = MemoryCardAdapter(emptyList()) { position ->
-            // Co se stane, když klikneš na kartu:
             viewModel.flipCard(position)
         }
 
-        // 4. Nastavíme RecyclerView (mřížka 4 sloupce)
+        // 4. Nastavíme RecyclerView
         rvBoard.adapter = adapter
         rvBoard.layoutManager = GridLayoutManager(this, 4)
-        // Zafixujeme velikost pro lepší výkon
         rvBoard.setHasFixedSize(true)
 
-        // 5. Pozorování dat (Observer) - Tady se děje kouzlo MVVM!
+        // 5. Pozorování dat (Observer)
 
-        // Sledujeme seznam karet. Kdykoliv se ve ViewModelu změní, překreslíme obrazovku.
+        // Sledujeme seznam karet
         viewModel.cards.observe(this) { newCards ->
             adapter.updateData(newCards)
         }
 
-        // Sledujeme počet tahů a aktualizujeme text
+        // Sledujeme aktuální počet tahů
         viewModel.moves.observe(this) { moves ->
             tvScore.text = "Tahů: $moves"
+        }
+
+        // <--- NOVÉ: Sledujeme nejlepší skóre z databáze --->
+        viewModel.bestScore.observe(this) { best ->
+            Log.d("PexesoDebug", "Načteno High Score z DB: $best") // Log pro kontrolu
+
+            if (best != null && best > 0) {
+                tvBestScore.text = "Rekord: $best tahů"
+            } else {
+                tvBestScore.text = "Rekord: -"
+            }
         }
     }
 }

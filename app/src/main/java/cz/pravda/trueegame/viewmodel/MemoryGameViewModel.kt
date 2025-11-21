@@ -12,6 +12,7 @@ import cz.pravda.trueegame.data.MemoryCard
 import cz.pravda.trueegame.data.Score
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import android.util.Log
 
 // Změna: Dědíme z AndroidViewModel, abychom měli přístup k databázi
 class MemoryGameViewModel(application: Application) : AndroidViewModel(application) {
@@ -25,14 +26,14 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     // ----------------
 
     private val images = listOf(
-        R.drawable.ic_launcher_foreground, // Tady si nech své ikonky!
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground,
-        R.drawable.ic_launcher_foreground
+        R.drawable.ic_30, // Tady si nech své ikonky!
+        R.drawable.ic_3g,
+        R.drawable.ic_4g,
+        R.drawable.ic_5g,
+        R.drawable.ic_60,
+        R.drawable.ic_air,
+        R.drawable.ic_android,
+        R.drawable.ic_plus
     )
 
     private val _cards = MutableLiveData<List<MemoryCard>>()
@@ -85,17 +86,21 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+// ... uvnitř třídy MemoryGameViewModel ...
+
     private fun checkForMatch(pos1: Int, pos2: Int, currentCards: MutableList<MemoryCard>) {
         if (currentCards[pos1].imageId == currentCards[pos2].imageId) {
+            // SHODA!
             currentCards[pos1].isMatched = true
             currentCards[pos2].isMatched = true
             _cards.value = currentCards
 
-            // Zvýšíme počet hotových párů
             pairsMatched++
+            Log.d("PexesoDebug", "Nalezen pár! Celkem hotovo: $pairsMatched / 8") // <--- LOG
 
             // Pokud máme 8 párů, je konec hry -> ULOŽIT DO DB
             if (pairsMatched == 8) {
+                Log.d("PexesoDebug", "HRA DOKONČENA! Volám saveScoreToDb()") // <--- LOG
                 saveScoreToDb()
             }
 
@@ -113,8 +118,15 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun saveScoreToDb() {
         val currentMoves = _moves.value ?: 0
+        Log.d("PexesoDebug", "Ukládám skóre do DB: $currentMoves tahů") // <--- LOG
+
         viewModelScope.launch {
-            scoreDao.insert(Score(moves = currentMoves, timestamp = System.currentTimeMillis()))
+            try {
+                scoreDao.insert(Score(moves = currentMoves, timestamp = System.currentTimeMillis()))
+                Log.d("PexesoDebug", "Úspěšně vloženo do databáze!") // <--- LOG
+            } catch (e: Exception) {
+                Log.e("PexesoDebug", "Chyba při ukládání: ${e.message}") // <--- LOG CHYBY
+            }
         }
     }
 }
