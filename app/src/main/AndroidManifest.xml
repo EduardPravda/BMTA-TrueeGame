@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrueeGame">
 
+        <activity android:name=".ui.GameSetupActivity" />
+
         <activity
             android:name=".ui.MenuActivity"
             android:exported="true">

@@ -19,7 +19,7 @@ class MenuActivity : AppCompatActivity() {
 
         // Kliknutí na "Nová hra" -> Spustí MainActivity (tvou hru)
         btnStart.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, GameSetupActivity::class.java)
             startActivity(intent)
         }
 
