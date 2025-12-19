@@ -1,49 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F2"
-    android:fillViewport="true"
+    android:background="@drawable/bg_gradient"
+    android:paddingStart="40dp"
+    android:paddingEnd="40dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp"
     tools:context=".ui.GameSetupActivity">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <RelativeLayout
+        android:id="@+id/header_layout"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:layout_marginBottom="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="&lt; Zpět"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="@android:color/transparent"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:padding="0dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nastavení hry"
-            android:textColor="#333333"
-            android:textSize="34sp"
+            android:text="Nastavení"
+            android:textColor="#FFFFFF"
+            android:textSize="28sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp"/>
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
+        app:layout_constraintBottom_toTopOf="@id/btn_start_game_final"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:text="Velikost hracího pole"
+                    android:textColor="#333333"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="8dp"/>
+                    android:textStyle="bold" />
 
                 <RadioGroup
                     android:id="@+id/rg_size"
@@ -54,16 +87,29 @@
                         android:id="@+id/rb_4x3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4x3 (12 karet) - Lehké"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:text="Lehká (4x3)"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
 
                     <RadioButton
                         android:id="@+id/rb_4x4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4x4 (16 karet) - Klasik"
                         android:checked="true"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:text="Střední (4x4)"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_5x4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Těžká (5x4)"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
                 </RadioGroup>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -71,24 +117,25 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:text="Typ hry"
+                    android:textColor="#333333"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_marginBottom="8dp"/>
+                    android:textStyle="bold" />
 
                 <RadioGroup
                     android:id="@+id/rg_mode"
@@ -99,16 +146,29 @@
                         android:id="@+id/rb_classic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Klasická hra (bez limitu)"
                         android:checked="true"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:text="Klasická"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
 
                     <RadioButton
                         android:id="@+id/rb_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Časovka (proti času)"
-                        android:padding="8dp"/>
+                        android:padding="8dp"
+                        android:text="Časovka"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
+
+                    <RadioButton
+                        android:id="@+id/rb_memory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        android:text="Paměť (3 životy)"
+                        android:textColor="#333333"
+                        android:buttonTint="#4A00E0"/>
                 </RadioGroup>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -117,62 +177,67 @@
             android:id="@+id/card_time_settings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp"
-            android:layout_marginBottom="24dp"
             android:visibility="gone"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
             tools:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Časový limit"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000"/>
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_marginTop="12dp">
-
-                    <SeekBar
-                        android:id="@+id/seekbar_time"
+                    android:orientation="horizontal">
+                    <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:max="180"
-                        android:min="0"
-                        android:progress="60" />
-
+                        android:text="Časový limit"
+                        android:textColor="#333333"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
                     <TextView
                         android:id="@+id/tv_time_value"
-                        android:layout_width="60dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="60 s"
-                        android:gravity="end"
-                        android:textSize="16sp"
+                        android:textColor="#4A00E0"
+                        android:textSize="18sp"
                         android:textStyle="bold"/>
                 </LinearLayout>
+
+                <SeekBar
+                    android:id="@+id/seekbar_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:max="179"
+                    android:progress="59"
+                    android:progressTint="#4A00E0"
+                    android:thumbTint="#4A00E0"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <Button
-            android:id="@+id/btn_start_game_final"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="SPUSTIT HRU"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:cornerRadius="30dp"/>
-
     </LinearLayout>
-</ScrollView>
+
+    <Button
+        android:id="@+id/btn_start_game_final"
+        android:layout_width="0dp"
+        android:layout_height="65dp"
+        android:backgroundTint="#FFFFFF"
+        android:text="SPUSTIT HRU"
+        android:textColor="#4A00E0"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:cornerRadius="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

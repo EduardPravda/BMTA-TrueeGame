@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.SeekBar
 import android.widget.TextView
@@ -18,62 +17,109 @@ class GameSetupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_setup)
 
+        // Fix paddingu
+        val mainView = findViewById<android.view.View>(R.id.main)
+        val initialPaddingLeft = mainView.paddingLeft
+        val initialPaddingTop = mainView.paddingTop
+        val initialPaddingRight = mainView.paddingRight
+        val initialPaddingBottom = mainView.paddingBottom
+
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+            val systemBars = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.displayCutout())
+            v.setPadding(
+                initialPaddingLeft + systemBars.left,
+                initialPaddingTop + systemBars.top,
+                initialPaddingRight + systemBars.right,
+                initialPaddingBottom + systemBars.bottom
+            )
+            insets
+        }
+
         val btnStart = findViewById<Button>(R.id.btn_start_game_final)
-        val rgSize = findViewById<RadioGroup>(R.id.rg_size)
+        val btnBack = findViewById<Button>(R.id.btn_back)
         val rgMode = findViewById<RadioGroup>(R.id.rg_mode)
-
-        // Prvky pro čas
         val cardTimeSettings = findViewById<CardView>(R.id.card_time_settings)
-        val seekBarTime = findViewById<SeekBar>(R.id.seekbar_time)
-        val tvTimeValue = findViewById<TextView>(R.id.tv_time_value)
+        val seekBar = findViewById<SeekBar>(R.id.seekbar_time)
+        val tvValue = findViewById<TextView>(R.id.tv_time_value)
 
-        // --- ZMĚNA: EXTRÉMNÍ ROZSAH (1s - 180s) ---
-        // SeekBar začíná na 0.
-        // Min = 0 (+1) = 1 sekunda
-        // Max = 179 (+1) = 180 sekund
-        seekBarTime.max = 179
+        var selectedValue: Long = 60
 
-        // Výchozí hodnota: Chceme 60s.
-        // Takže 60 - 1 = 59.
-        seekBarTime.progress = 59
+        fun updateSettingsUI(progress: Int, mode: String) {
+            when (mode) {
+                "TIME" -> {
+                    val seconds = progress + 10
+                    tvValue.text = "$seconds s"
+                    selectedValue = seconds.toLong()
+                }
+                "MEMORY" -> {
+                    val realPreview = progress + 1
+                    tvValue.text = "$realPreview s (náhled)"
+                    selectedValue = realPreview.toLong()
+                }
+                else -> {
+                    cardTimeSettings.visibility = View.GONE
+                }
+            }
+        }
 
-        // Listener pro posuvník
-        seekBarTime.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        rgMode.setOnCheckedChangeListener { _, checkedId ->
+            cardTimeSettings.visibility = View.VISIBLE
+            when (checkedId) {
+                R.id.rb_classic -> {
+                    cardTimeSettings.visibility = View.GONE
+                }
+                R.id.rb_time -> {
+                    seekBar.max = 170
+                    seekBar.progress = 50
+                    updateSettingsUI(50, "TIME")
+                }
+                R.id.rb_memory -> {
+                    seekBar.max = 29
+                    seekBar.progress = 4
+                    updateSettingsUI(4, "MEMORY")
+                }
+            }
+        }
+
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                // --- ZMĚNA: Matematika +1 (každý dílek je vteřina) ---
-                val realTime = progress + 1
-                tvTimeValue.text = "$realTime s"
+                val mode = when (rgMode.checkedRadioButtonId) {
+                    R.id.rb_time -> "TIME"
+                    R.id.rb_memory -> "MEMORY"
+                    else -> "CLASSIC"
+                }
+                updateSettingsUI(progress, mode)
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
-        // Přepínání módu
-        rgMode.setOnCheckedChangeListener { _, checkedId ->
-            if (checkedId == R.id.rb_time) {
-                cardTimeSettings.visibility = View.VISIBLE
-            } else {
-                cardTimeSettings.visibility = View.GONE
-            }
-        }
-
         btnStart.setOnClickListener {
-            val is4x4 = findViewById<RadioButton>(R.id.rb_4x4).isChecked
-            val rows = 4
-            val cols = if (is4x4) 4 else 3
+            val selectedSizeId = findViewById<RadioGroup>(R.id.rg_size).checkedRadioButtonId
+            var rows = 4
+            var cols = 4
+            when (selectedSizeId) {
+                R.id.rb_4x3 -> { rows = 4; cols = 3 }
+                R.id.rb_4x4 -> { rows = 4; cols = 4 }
+                R.id.rb_5x4 -> { rows = 5; cols = 4 }
+            }
 
-            val isTimeMode = findViewById<RadioButton>(R.id.rb_time).isChecked
-            val mode = if (isTimeMode) "TIME" else "CLASSIC"
+            var mode = "CLASSIC"
+            val checkedId = rgMode.checkedRadioButtonId
+            if (checkedId == R.id.rb_time) mode = "TIME"
+            if (checkedId == R.id.rb_memory) mode = "MEMORY"
 
-            // --- ZMĚNA: Odesílání času (+1) ---
-            val selectedTime = if (isTimeMode) (seekBarTime.progress + 1).toLong() else 0L
+            val finalLimit = if (mode == "CLASSIC") 0L else selectedValue
 
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra("ROWS", rows)
             intent.putExtra("COLS", cols)
             intent.putExtra("MODE", mode)
-            intent.putExtra("TIME_LIMIT", selectedTime)
+            // TADY BYLA CHYBA: Musí to být "TIME_LIMIT"
+            intent.putExtra("TIME_LIMIT", finalLimit)
             startActivity(intent)
         }
+
+        btnBack.setOnClickListener { finish() }
     }
 }

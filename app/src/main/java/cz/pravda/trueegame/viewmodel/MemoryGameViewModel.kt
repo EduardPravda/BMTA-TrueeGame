@@ -22,7 +22,6 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     val bestScore: LiveData<Int?> = scoreDao.getBestScore().asLiveData()
     val lastGame: LiveData<Score?> = scoreDao.getLastGame().asLiveData()
 
-    // Seznam obrázků (8 stačí pro mřížku 4x4)
     private val images = listOf(
         R.drawable.ic_30,
         R.drawable.ic_3g,
@@ -31,7 +30,9 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         R.drawable.ic_60,
         R.drawable.ic_air,
         R.drawable.ic_android,
-        R.drawable.ic_plus
+        R.drawable.ic_plus,
+        android.R.drawable.ic_menu_camera,
+        android.R.drawable.ic_menu_call
     )
 
     private val _cards = MutableLiveData<List<MemoryCard>>()
@@ -43,70 +44,108 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     private val _timeSeconds = MutableLiveData<Long>(0)
     val timeSeconds: LiveData<Long> = _timeSeconds
 
-    // Herní stavy
+    private val _isGameOver = MutableLiveData<Boolean>(false)
+    val isGameOver: LiveData<Boolean> = _isGameOver
+
+    private val _lives = MutableLiveData<Int>(3)
+    val lives: LiveData<Int> = _lives
+
+    // NOVÉ: Odpočet pro náhled (Memory mód)
+    private val _previewTime = MutableLiveData<Int>(0)
+    val previewTime: LiveData<Int> = _previewTime
+
+    val pairsMatched = MutableLiveData<Int>(0)
+    var totalPairsNeeded = 8
+
     private var indexOfSingleSelectedCard: Int? = null
     private var isWaiting = false
-    private var pairsMatched = 0
+    private var isPreviewing = false
 
-    // Konfigurace hry (výchozí hodnoty)
     private var gameRows = 4
     private var gameCols = 4
     private var gameMode = "CLASSIC"
-    private var pairsNeeded = 8 // Kolik párů musíme najít k výhře
     private var gameTimeLimit: Long = 60
 
-    // Časovač
     private var timerJob: Job? = null
     private var isGameRunning = false
-
-    init {
-        // Spustíme hru s výchozím nastavením (4x4 Classic), aby aplikace nespadla při prvním startu
-        resetGame()
-    }
 
     fun setupGame(rows: Int, cols: Int, mode: String, timeLimit: Long) {
         gameRows = rows
         gameCols = cols
         gameMode = mode
         gameTimeLimit = timeLimit
-
         resetGame()
     }
 
     fun resetGame() {
-        // 1. Reset proměnných
+        _isGameOver.value = false
         _moves.value = 0
-        pairsMatched = 0
+        pairsMatched.value = 0
         indexOfSingleSelectedCard = null
         isWaiting = false
-
-        // 2. Nastavení času podle módu
+        isPreviewing = false
+        _lives.value = 3
+        _previewTime.value = 0 // Reset odpočtu
         stopTimer()
-        if (gameMode == "TIME") {
-            _timeSeconds.value = gameTimeLimit
-        } else {
-            _timeSeconds.value = 0
-        }
 
-        // 3. Příprava karet podle velikosti pole
         val totalCards = gameRows * gameCols
-        pairsNeeded = totalCards / 2
+        totalPairsNeeded = totalCards / 2
 
-        // Vezmeme jen tolik obrázků, kolik potřebujeme (např. pro 4x3 potřebujeme 6 obrázků)
-        // Používáme 'take', abychom aplikaci neshodili, pokud by chtěla víc obrázků než máme
-        val chosenImages = images.take(pairsNeeded)
+        val availableImages = ArrayList<Int>()
+        while (availableImages.size < totalPairsNeeded) {
+            availableImages.addAll(images)
+        }
+        val chosenImages = availableImages.take(totalPairsNeeded)
         val randomizedImages = (chosenImages + chosenImages).shuffled()
 
-        val newCards = randomizedImages.mapIndexed { index, imageId ->
-            MemoryCard(id = index, imageId = imageId)
+        var newCards = randomizedImages.mapIndexed { index, imageId ->
+            MemoryCard(id = index, imageId = imageId, isFaceUp = false, isMatched = false)
         }
-        _cards.value = newCards
 
-        // 4. Spuštění stopek
-        startTimer()
+        // --- MÓD PAMĚŤ ---
+        if (gameMode == "MEMORY") {
+            _timeSeconds.value = 0
+
+            // Otočíme karty
+            newCards = newCards.map { it.copy(isFaceUp = true) }
+            _cards.value = newCards
+
+            isPreviewing = true
+            isGameRunning = false
+
+            // Cyklus pro odpočet (místo jednoho delay)
+            viewModelScope.launch {
+                val previewDuration = gameTimeLimit.toInt()
+
+                // Odpočítáváme dolů: 5, 4, 3, 2, 1...
+                for (i in previewDuration downTo 1) {
+                    _previewTime.postValue(i)
+                    delay(1000)
+                }
+                _previewTime.postValue(0) // Konec odpočtu
+
+                // Skryjeme karty
+                val hiddenCards = _cards.value!!.map { it.copy(isFaceUp = false) }
+                _cards.value = hiddenCards
+
+                isPreviewing = false
+                startTimer() // Spustíme herní čas
+            }
+        }
+        // --- MÓD ČASOVKA ---
+        else if (gameMode == "TIME") {
+            _cards.value = newCards
+            _timeSeconds.value = gameTimeLimit
+            startTimer()
+        }
+        // --- KLASIKA ---
+        else {
+            _cards.value = newCards
+            _timeSeconds.value = 0
+            startTimer()
+        }
     }
 
-    // <--- UPRAVENO: Časovač počítá nahoru nebo dolů
     private fun startTimer() {
         isGameRunning = true
         timerJob = viewModelScope.launch {
@@ -115,16 +154,13 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
                 val currentTime = _timeSeconds.value ?: 0
 
                 if (gameMode == "TIME") {
-                    // Odpočítávání
                     if (currentTime > 0) {
                         _timeSeconds.value = currentTime - 1
                     } else {
-                        // Čas vypršel -> Konec hry (Prohra)
                         stopTimer()
-                        // Zde bys mohl přidat logiku pro zobrazení "Game Over"
+                        _isGameOver.postValue(true)
                     }
                 } else {
-                    // Klasické přičítání
                     _timeSeconds.value = currentTime + 1
                 }
             }
@@ -139,19 +175,18 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     fun flipCard(position: Int) {
         val currentCards = _cards.value?.toMutableList() ?: return
 
-        // Ochrana proti kliknutí mimo rozsah nebo když hra neběží (např. vypršel čas)
-        if (position >= currentCards.size || (!isGameRunning && gameMode == "TIME" && (_timeSeconds.value ?: 0) == 0L)) {
-            return
-        }
+        if (!isGameRunning && !isPreviewing) return
+        if (isPreviewing) return
+        if (isWaiting) return
+        if (position >= currentCards.size) return
 
         val card = currentCards[position]
 
-        if (isWaiting || card.isFaceUp || card.isMatched) {
-            return
-        }
+        if (card.isFaceUp || card.isMatched) return
 
         card.isFaceUp = true
         _cards.value = currentCards
+
         _moves.value = (_moves.value ?: 0) + 1
 
         if (indexOfSingleSelectedCard == null) {
@@ -167,20 +202,36 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
             currentCards[pos1].isMatched = true
             currentCards[pos2].isMatched = true
             _cards.value = currentCards
-            pairsMatched++
 
-            // <--- UPRAVENO: Kontrola výhry je dynamická (ne natvrdo 8)
-            if (pairsMatched == pairsNeeded) {
+            val currentPairs = pairsMatched.value ?: 0
+            pairsMatched.value = currentPairs + 1
+
+            if ((pairsMatched.value ?: 0) == totalPairsNeeded) {
                 stopTimer()
                 saveScoreToDb()
+                _isGameOver.value = true
             }
         } else {
+            // Chyba v módu Paměť
+            if (gameMode == "MEMORY") {
+                val currentLives = _lives.value ?: 3
+                val newLives = currentLives - 1
+                _lives.value = newLives
+
+                if (newLives <= 0) {
+                    stopTimer()
+                    _isGameOver.value = true
+                    return
+                }
+            }
+
             isWaiting = true
             viewModelScope.launch {
                 delay(1000)
-                currentCards[pos1].isFaceUp = false
-                currentCards[pos2].isFaceUp = false
-                _cards.value = currentCards
+                val cardsToFlip = _cards.value?.toMutableList() ?: return@launch
+                cardsToFlip[pos1].isFaceUp = false
+                cardsToFlip[pos2].isFaceUp = false
+                _cards.value = cardsToFlip
                 isWaiting = false
             }
         }
@@ -188,15 +239,14 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
 
     private fun saveScoreToDb() {
         val currentMoves = _moves.value ?: 0
-        // Ukládáme čas. Pokud to byla časovka, uložíme zbývající čas, nebo dobu trvání?
-        // Pro jednoduchost ukládáme aktuální hodnotu na displeji.
         val currentTime = _timeSeconds.value ?: 0
+        val timePlayed = if (gameMode == "TIME") (gameTimeLimit - currentTime) else currentTime
 
         viewModelScope.launch {
             scoreDao.insert(
                 Score(
                     moves = currentMoves,
-                    timeSeconds = currentTime,
+                    timeSeconds = timePlayed,
                     timestamp = System.currentTimeMillis()
                 )
             )
