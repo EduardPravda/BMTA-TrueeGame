@@ -1,8 +1,63 @@
 <resources>
-    <string name="app_name">Trueexeso</string>
+    <string name="app_name">TRUEEXESO</string>
+
     <string name="menu_title">TRUEEXESO</string>
-    <string name="btn_new_game">NOVÁ HRA</string>
-    <string name="btn_score">SKÓRE</string>
-    <string name="btn_settings">NASTAVENÍ</string>
+    <string name="btn_new_game">Nová hra</string>
+    <string name="btn_score">Síň slávy</string>
+    <string name="btn_settings">Nastavení</string>
     <string name="btn_exit">Ukončit</string>
+
+    <string name="setup_title">Nová hra</string>
+    <string name="btn_back">Zpět</string>
+    <string name="btn_back_menu">Zpět do menu</string>
+    <string name="board_size">Velikost hracího pole</string>
+    <string name="board_size_short">Velikost pole</string>
+    <string name="diff_easy_desc">Lehká (4x3)</string>
+    <string name="diff_medium_desc">Střední (4x4)</string>
+    <string name="diff_hard_desc">Těžká (5x4)</string>
+    <string name="game_type">Typ hry</string>
+    <string name="mode_classic">Klasická</string>
+    <string name="mode_time">Časovka</string>
+    <string name="mode_memory">Paměť (3 životy)</string>
+    <string name="time_limit">Časový limit</string>
+    <string name="time_60s">60 s</string>
+    <string name="btn_start_game">SPUSTIT HRU</string>
+
+    <string name="btn_quit_game">Ukončit</string>
+    <string name="lives_placeholder">❤️❤️❤️</string>
+    <string name="preview_placeholder">5</string>
+    <string name="time_format">Čas: %s</string>
+    <string name="score_format">Tahů: %d</string>
+    <string name="best_score_format">Rekord: %s</string>
+    <string name="last_game_format">Minule: %s</string>
+    <string name="game_over_title">KONEC HRY</string>
+    <string name="stat_pairs">Páry</string>
+    <string name="stat_time">Čas</string>
+    <string name="stat_speed">Rychlost</string>
+    <string name="btn_play_again">Hrát znovu</string>
+    <string name="placeholder_dash">-</string>
+    <string name="initial_time">Čas: 00:00</string>
+    <string name="initial_moves">Tahů: 0</string>
+    <string name="initial_record">Rekord: -</string>
+    <string name="initial_last">Minule: -</string>
+
+    <string name="settings_title">NASTAVENÍ</string>
+    <string name="volume_label">Hlasitost zvuků</string>
+    <string name="cards_look_label">Vzhled kartiček</string>
+    <string name="set_it">Sada 1: IT Ikony</string>
+    <string name="set_numbers">Sada 2: Čísla</string>
+    <string name="set_colors">Sada 3: Barvy</string>
+
+    <string name="score_title">SÍŇ SLÁVY</string>
+    <string name="filter_mode_label">HERNÍ MÓD</string>
+    <string name="filter_diff_label">OBTÍŽNOST</string>
+    <string name="filter_all">VŠE</string>
+    <string name="filter_classic">KLASIK</string>
+    <string name="filter_time">ČASOVKA</string>
+    <string name="filter_memory">PAMĚŤ</string>
+    <string name="diff_all">VŠE</string>
+    <string name="diff_all_caps">VŠECHNY VELIKOSTI</string>
+    <string name="diff_easy">LEHKÁ</string>
+    <string name="diff_medium">STŘEDNÍ</string>
+    <string name="diff_hard">TĚŽKÁ</string>
 </resources>

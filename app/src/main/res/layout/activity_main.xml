@@ -13,7 +13,7 @@
         android:id="@+id/btn_back_ingame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="&lt; Ukončit"
+        android:text="@string/btn_quit_game"
         android:textColor="#FFFFFF"
         android:background="@android:color/transparent"
         android:minHeight="48dp"
@@ -28,7 +28,7 @@
         android:id="@+id/tv_lives"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="❤️❤️❤️"
+        android:text="@string/lives_placeholder"
         android:textSize="24sp"
         android:textColor="#FFFFFF"
         android:layout_marginTop="16dp"
@@ -42,7 +42,7 @@
         android:id="@+id/tv_preview_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="5"
+        android:text="@string/preview_placeholder"
         android:textSize="80sp"
         android:textStyle="bold"
         android:textColor="#FFEB3B"
@@ -95,7 +95,7 @@
                 android:id="@+id/tv_timer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Čas: 00:00"
+                android:text="@string/initial_time"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/text_primary"
@@ -106,10 +106,10 @@
                 android:id="@+id/tv_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tahů: 0"
+                android:text="@string/initial_moves"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#4A00E0"
+                android:textColor="@color/btn_secondary_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_timer" />
 
@@ -117,9 +117,9 @@
                 android:id="@+id/tv_best_score"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Rekord: -"
+                android:text="@string/initial_record"
                 android:textSize="14sp"
-                android:textColor="#757575"
+                android:textColor="@color/text_radio"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -127,9 +127,9 @@
                 android:id="@+id/tv_last_game"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Minule: -"
+                android:text="@string/initial_last"
                 android:textSize="14sp"
-                android:textColor="#757575"
+                android:textColor="@color/text_radio"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_best_score"
                 android:layout_marginTop="4dp"/>
@@ -170,7 +170,7 @@
                     android:id="@+id/tv_game_over_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="KONEC HRY"
+                    android:text="@string/game_over_title"
                     android:textSize="28sp"
                     android:textStyle="bold"
                     android:textColor="#D32F2F"
@@ -180,18 +180,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:baselineAligned="false"
                     android:layout_marginBottom="24dp">
+
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Páry" android:textSize="12sp" android:textColor="#757575"/>
-                        <TextView android:id="@+id/tv_stat_pairs" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_pairs" android:textSize="12sp" android:textColor="@color/text_radio"/>
+                        <TextView android:id="@+id/tv_stat_pairs" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_dash" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
                     </LinearLayout>
+
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Čas" android:textSize="12sp" android:textColor="#757575"/>
-                        <TextView android:id="@+id/tv_stat_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_time" android:textSize="12sp" android:textColor="@color/text_radio"/>
+                        <TextView android:id="@+id/tv_stat_time" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_dash" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
                     </LinearLayout>
+
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:gravity="center" android:orientation="vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Rychlost" android:textSize="12sp" android:textColor="#757575"/>
-                        <TextView android:id="@+id/tv_stat_speed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="-" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/stat_speed" android:textSize="12sp" android:textColor="@color/text_radio"/>
+                        <TextView android:id="@+id/tv_stat_speed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/placeholder_dash" android:textSize="18sp" android:textStyle="bold" android:textColor="@color/text_primary"/>
                     </LinearLayout>
                 </LinearLayout>
 
@@ -199,13 +203,13 @@
                     android:id="@+id/btn_play_again"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Hrát znovu"
+                    android:text="@string/btn_play_again"
                     android:layout_marginBottom="8dp"/>
                 <Button
                     android:id="@+id/btn_back_to_menu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Zpět do menu"
+                    android:text="@string/btn_back_menu"
                     android:backgroundTint="#757575"/>
             </LinearLayout>
         </androidx.cardview.widget.CardView>

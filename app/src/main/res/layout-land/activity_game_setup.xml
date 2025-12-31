@@ -49,7 +49,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Velikost pole"
+                            android:text="@string/board_size_short"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
@@ -63,7 +63,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="4dp"
-                                android:text="Lehká (4x3)"
+                                android:text="@string/diff_easy_desc"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
 
@@ -73,7 +73,7 @@
                                 android:layout_height="wrap_content"
                                 android:checked="true"
                                 android:padding="4dp"
-                                android:text="Střední (4x4)"
+                                android:text="@string/diff_medium_desc"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
 
@@ -82,7 +82,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="4dp"
-                                android:text="Těžká (5x4)"
+                                android:text="@string/diff_hard_desc"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
                         </RadioGroup>
@@ -113,7 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:text="Typ hry"
+                            android:text="@string/game_type"
                             android:textColor="@color/text_primary"
                             android:textStyle="bold" />
 
@@ -128,7 +128,7 @@
                                 android:layout_height="wrap_content"
                                 android:checked="true"
                                 android:padding="4dp"
-                                android:text="Klasická"
+                                android:text="@string/mode_classic"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
 
@@ -137,7 +137,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="4dp"
-                                android:text="Časovka"
+                                android:text="@string/mode_time"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
 
@@ -146,7 +146,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:padding="4dp"
-                                android:text="Paměť (3 životy)"
+                                android:text="@string/mode_memory"
                                 android:textColor="@color/text_radio"
                                 android:buttonTint="#4A00E0"/>
 
@@ -181,15 +181,15 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Časový limit"
+                        android:text="@string/time_limit"
                         android:textColor="@color/text_primary"
                         android:textStyle="bold" />
                     <TextView
                         android:id="@+id/tv_time_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="60 s"
-                        android:textColor="#4A00E0"
+                        android:text="@string/time_60s"
+                        android:textColor="@color/btn_secondary_text"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -231,7 +231,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:text="Nová hra"
+            android:text="@string/setup_title"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold" />
@@ -241,9 +241,9 @@
             android:layout_width="match_parent"
             android:layout_height="65dp"
             android:layout_marginBottom="16dp"
-            android:backgroundTint="#4A00E0"
-            android:text="SPUSTIT HRU"
-            android:textColor="#FFFFFF"
+            android:backgroundTint="@color/btn_primary_bg"
+            android:text="@string/btn_start_game"
+            android:textColor="@color/btn_primary_text"
             android:textSize="18sp"
             android:textStyle="bold"
             app:cornerRadius="32dp" />
@@ -252,8 +252,8 @@
             android:id="@+id/btn_back"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:backgroundTint="#40000000"
-            android:text="Zpět do menu"
+            android:backgroundTint="@color/btn_back_bg"
+            android:text="@string/btn_back_menu"
             android:textColor="#FFFFFF"
             app:cornerRadius="25dp" />
 

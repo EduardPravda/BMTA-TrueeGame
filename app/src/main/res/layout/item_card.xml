@@ -23,7 +23,7 @@
             android:id="@+id/card_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:contentDescription="Karta pexesa"
+            android:contentDescription="@string/app_name"
             android:padding="12dp"
             android:scaleType="fitCenter"
             android:src="@drawable/ic_card_back" />

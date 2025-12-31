@@ -25,7 +25,7 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="&lt; Zpět"
+            android:text="@string/btn_back"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:background="@android:color/transparent"
@@ -33,17 +33,14 @@
             android:minHeight="0dp"
             android:padding="0dp"
             android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nová hra"
-            android:textColor="#FFFFFF"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:layout_centerInParent="true"/>
-    </RelativeLayout>
+            android:layout_centerVertical="true"/> <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/setup_title"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"/> </RelativeLayout>
 
     <LinearLayout
         android:layout_width="0dp"
@@ -73,44 +70,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:text="Velikost hracího pole"
+                    android:text="@string/board_size"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" /> <RadioGroup
+                android:id="@+id/rg_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <RadioGroup
-                    android:id="@+id/rg_size"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/rb_4x3"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Lehká (4x3)"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-
-                    <RadioButton
-                        android:id="@+id/rb_4x4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:padding="8dp"
-                        android:text="Střední (4x4)"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-
-                    <RadioButton
-                        android:id="@+id/rb_5x4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Těžká (5x4)"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-                </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_4x3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/diff_easy_desc"
+                    android:textColor="@color/text_radio"
+                    android:buttonTint="#4A00E0"/> <RadioButton
+                android:id="@+id/rb_4x4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:padding="8dp"
+                android:text="@string/diff_medium_desc"
+                android:textColor="@color/text_radio"
+                android:buttonTint="#4A00E0"/> <RadioButton
+                android:id="@+id/rb_5x4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/diff_hard_desc"
+                android:textColor="@color/text_radio"
+                android:buttonTint="#4A00E0"/> </RadioGroup>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -132,44 +122,37 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    android:text="Typ hry"
+                    android:text="@string/game_type"
                     android:textColor="@color/text_primary"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" /> <RadioGroup
+                android:id="@+id/rg_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                <RadioGroup
-                    android:id="@+id/rg_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <RadioButton
-                        android:id="@+id/rb_classic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:padding="8dp"
-                        android:text="Klasická"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-
-                    <RadioButton
-                        android:id="@+id/rb_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Časovka"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-
-                    <RadioButton
-                        android:id="@+id/rb_memory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="Paměť (3 životy)"
-                        android:textColor="@color/text_radio"
-                        android:buttonTint="#4A00E0"/>
-                </RadioGroup>
+                <RadioButton
+                    android:id="@+id/rb_classic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:padding="8dp"
+                    android:text="@string/mode_classic"
+                    android:textColor="@color/text_radio"
+                    android:buttonTint="#4A00E0"/> <RadioButton
+                android:id="@+id/rb_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/mode_time"
+                android:textColor="@color/text_radio"
+                android:buttonTint="#4A00E0"/> <RadioButton
+                android:id="@+id/rb_memory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/mode_memory"
+                android:textColor="@color/text_radio"
+                android:buttonTint="#4A00E0"/> </RadioGroup>
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -197,19 +180,17 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Časový limit"
+                        android:text="@string/time_limit"
                         android:textColor="@color/text_primary"
                         android:textSize="18sp"
-                        android:textStyle="bold" />
-                    <TextView
-                        android:id="@+id/tv_time_value"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="60 s"
-                        android:textColor="#4A00E0"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-                </LinearLayout>
+                        android:textStyle="bold" /> <TextView
+                    android:id="@+id/tv_time_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/time_60s"
+                    android:textColor="#4A00E0"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/> </LinearLayout>
 
                 <SeekBar
                     android:id="@+id/seekbar_time"
@@ -229,15 +210,13 @@
         android:id="@+id/btn_start_game_final"
         android:layout_width="0dp"
         android:layout_height="65dp"
-        android:backgroundTint="#40000000"
-        android:text="SPUSTIT HRU"
-        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/btn_primary_bg"
+        android:text="@string/btn_start_game"
+        android:textColor="@color/btn_primary_text"
         android:textSize="20sp"
         android:textStyle="bold"
         app:cornerRadius="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="8dp"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginBottom="8dp"/> </androidx.constraintlayout.widget.ConstraintLayout>
