@@ -30,129 +30,127 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingEnd="8dp">
+                android:paddingEnd="8dp"
+                android:paddingStart="0dp"> <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/card_background"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/card_background"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/board_size_short"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
 
-                        <TextView
+                    <RadioGroup
+                        android:id="@+id/rg_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rb_4x3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/board_size_short"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:padding="4dp"
+                            android:text="@string/diff_easy_desc"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
 
-                        <RadioGroup
-                            android:id="@+id/rg_size"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                        <RadioButton
+                            android:id="@+id/rb_4x4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true"
+                            android:padding="4dp"
+                            android:text="@string/diff_medium_desc"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
 
-                            <RadioButton
-                                android:id="@+id/rb_4x3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="4dp"
-                                android:text="@string/diff_easy_desc"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
-
-                            <RadioButton
-                                android:id="@+id/rb_4x4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:padding="4dp"
-                                android:text="@string/diff_medium_desc"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
-
-                            <RadioButton
-                                android:id="@+id/rb_5x4"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="4dp"
-                                android:text="@string/diff_hard_desc"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
-                        </RadioGroup>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                        <RadioButton
+                            android:id="@+id/rb_5x4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp"
+                            android:text="@string/diff_hard_desc"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
+                    </RadioGroup>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingStart="8dp">
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp"> <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:cardBackgroundColor="@color/card_background"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-                <androidx.cardview.widget.CardView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:cardBackgroundColor="@color/card_background"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="4dp">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/game_type"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
 
-                        <TextView
+                    <RadioGroup
+                        android:id="@+id/rg_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <RadioButton
+                            android:id="@+id/rb_classic"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
-                            android:text="@string/game_type"
-                            android:textColor="@color/text_primary"
-                            android:textStyle="bold" />
+                            android:checked="true"
+                            android:padding="4dp"
+                            android:text="@string/mode_classic"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
 
-                        <RadioGroup
-                            android:id="@+id/rg_mode"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
+                        <RadioButton
+                            android:id="@+id/rb_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp"
+                            android:text="@string/mode_time"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
 
-                            <RadioButton
-                                android:id="@+id/rb_classic"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="true"
-                                android:padding="4dp"
-                                android:text="@string/mode_classic"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
+                        <RadioButton
+                            android:id="@+id/rb_memory"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="4dp"
+                            android:text="@string/mode_memory"
+                            android:textColor="@color/text_radio"
+                            android:buttonTint="#4A00E0"/>
 
-                            <RadioButton
-                                android:id="@+id/rb_time"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="4dp"
-                                android:text="@string/mode_time"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
-
-                            <RadioButton
-                                android:id="@+id/rb_memory"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="4dp"
-                                android:text="@string/mode_memory"
-                                android:textColor="@color/text_radio"
-                                android:buttonTint="#4A00E0"/>
-
-                        </RadioGroup>
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+                    </RadioGroup>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
             </LinearLayout>
         </LinearLayout>
 
