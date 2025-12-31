@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">TrueeGame</string>
+    <string name="app_name">Trueexeso</string>
+    <string name="menu_title">TRUEEXESO</string>
+    <string name="btn_new_game">NOVÁ HRA</string>
+    <string name="btn_score">SKÓRE</string>
+    <string name="btn_settings">NASTAVENÍ</string>
+    <string name="btn_exit">Ukončit</string>
 </resources>

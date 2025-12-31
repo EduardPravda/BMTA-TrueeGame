@@ -12,8 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TrueeGame">
 
-        <activity android:name=".ui.GameSetupActivity" />
-
         <activity
             android:name=".ui.MenuActivity"
             android:exported="true">
@@ -24,8 +22,20 @@
         </activity>
 
         <activity
+            android:name=".ui.GameSetupActivity"
+            android:exported="false"/>
+
+        <activity
             android:name=".ui.MainActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".ui.ScoreActivity"
+            android:exported="false"/>
 
     </application>
 

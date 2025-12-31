@@ -2,4 +2,14 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="card_background">#FFFFFF</color>
+    <color name="text_primary">#333333</color>
+    <color name="text_radio">#000000</color>
+
+    <color name="btn_primary_bg">#4A00E0</color>
+    <color name="btn_primary_text">#FFFFFF</color>
+    <color name="btn_secondary_bg">#EDE7F6</color>
+    <color name="btn_secondary_text">#4A00E0</color>
+    <color name="btn_back_bg">#40000000</color>
 </resources>

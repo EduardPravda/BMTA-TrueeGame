@@ -46,15 +46,8 @@ class MemoryCardAdapter(
 
         val isLandscape = screenWidth > screenHeight
 
-        // --- PROFESIONÁLNÍ VÝPOČET VELIKOSTI V3 (S rezervou pro výřez) ---
-
-        // Portrait (Výška): Panel DOLE (cca 220dp) + okraje (32dp)
-        // Landscape (Šířka): Panel VPRAVO (300dp) + VÍCE místa pro výřez (změna na 380dp) + svislá rezerva
-
         val marginVerticalDp = if (isLandscape) 40 else 220
         val marginHorizontalDp = if (isLandscape) 380 else 32
-
-        // Poznámka: 380 = 300 (panel) + 80 (bezpečná zóna pro výřez kamery a zaoblení rohů)
 
         val marginVerticalPx = (marginVerticalDp * density).toInt()
         val marginHorizontalPx = (marginHorizontalDp * density).toInt()
@@ -62,7 +55,6 @@ class MemoryCardAdapter(
         val safeWidth = screenWidth - marginHorizontalPx
         val safeHeight = screenHeight - marginVerticalPx
 
-        // Spočítáme maximální velikost karty
         val sizeByWidth = safeWidth / gridCols
         val sizeByHeight = safeHeight / gridRows
         val cardMargin = (8 * density).toInt()

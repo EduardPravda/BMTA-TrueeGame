@@ -13,11 +13,15 @@ import cz.pravda.trueegame.R
 
 class GameSetupActivity : AppCompatActivity() {
 
+    private lateinit var soundManager: SoundManager
+    private var lastProgress = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game_setup)
 
-        // Fix paddingu
+        soundManager = SoundManager(this)
+
         val mainView = findViewById<android.view.View>(R.id.main)
         val initialPaddingLeft = mainView.paddingLeft
         val initialPaddingTop = mainView.paddingTop
@@ -38,6 +42,7 @@ class GameSetupActivity : AppCompatActivity() {
         val btnStart = findViewById<Button>(R.id.btn_start_game_final)
         val btnBack = findViewById<Button>(R.id.btn_back)
         val rgMode = findViewById<RadioGroup>(R.id.rg_mode)
+        val rgSize = findViewById<RadioGroup>(R.id.rg_size)
         val cardTimeSettings = findViewById<CardView>(R.id.card_time_settings)
         val seekBar = findViewById<SeekBar>(R.id.seekbar_time)
         val tvValue = findViewById<TextView>(R.id.tv_time_value)
@@ -62,7 +67,12 @@ class GameSetupActivity : AppCompatActivity() {
             }
         }
 
+        rgSize.setOnCheckedChangeListener { _, _ ->
+            soundManager.playClick()
+        }
+
         rgMode.setOnCheckedChangeListener { _, checkedId ->
+            soundManager.playClick()
             cardTimeSettings.visibility = View.VISIBLE
             when (checkedId) {
                 R.id.rb_classic -> {
@@ -71,11 +81,13 @@ class GameSetupActivity : AppCompatActivity() {
                 R.id.rb_time -> {
                     seekBar.max = 170
                     seekBar.progress = 50
+                    lastProgress = 50
                     updateSettingsUI(50, "TIME")
                 }
                 R.id.rb_memory -> {
                     seekBar.max = 29
                     seekBar.progress = 4
+                    lastProgress = 4
                     updateSettingsUI(4, "MEMORY")
                 }
             }
@@ -89,13 +101,20 @@ class GameSetupActivity : AppCompatActivity() {
                     else -> "CLASSIC"
                 }
                 updateSettingsUI(progress, mode)
+
+                if (fromUser && progress != lastProgress) {
+                    soundManager.playClick()
+                    lastProgress = progress
+                }
             }
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
         })
 
         btnStart.setOnClickListener {
-            val selectedSizeId = findViewById<RadioGroup>(R.id.rg_size).checkedRadioButtonId
+            soundManager.playClick()
+
+            val selectedSizeId = rgSize.checkedRadioButtonId
             var rows = 4
             var cols = 4
             when (selectedSizeId) {
@@ -115,11 +134,18 @@ class GameSetupActivity : AppCompatActivity() {
             intent.putExtra("ROWS", rows)
             intent.putExtra("COLS", cols)
             intent.putExtra("MODE", mode)
-            // TADY BYLA CHYBA: Musí to být "TIME_LIMIT"
             intent.putExtra("TIME_LIMIT", finalLimit)
             startActivity(intent)
         }
 
-        btnBack.setOnClickListener { finish() }
+        btnBack.setOnClickListener {
+            soundManager.playClick()
+            finish()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        soundManager.release()
     }
 }

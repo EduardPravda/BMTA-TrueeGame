@@ -7,6 +7,12 @@ import androidx.room.PrimaryKey
 data class Score(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val moves: Int,
-    val timeSeconds: Long, // <--- NOVÉ: Čas v sekundách
-    val timestamp: Long
+    val timeSeconds: Long,
+    val timestamp: Long,
+
+    val mode: String,
+    val rows: Int,
+    val cols: Int,
+    val livesLeft: Int,
+    val timeLimit: Long
 )

@@ -1,6 +1,7 @@
 package cz.pravda.trueegame.viewmodel
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -22,17 +23,46 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     val bestScore: LiveData<Int?> = scoreDao.getBestScore().asLiveData()
     val lastGame: LiveData<Score?> = scoreDao.getLastGame().asLiveData()
 
-    private val images = listOf(
-        R.drawable.ic_30,
-        R.drawable.ic_3g,
-        R.drawable.ic_4g,
-        R.drawable.ic_5g,
-        R.drawable.ic_60,
-        R.drawable.ic_air,
-        R.drawable.ic_android,
-        R.drawable.ic_plus,
-        android.R.drawable.ic_menu_camera,
-        android.R.drawable.ic_menu_call
+    // --- SADA 1: IT IKONY ---
+    private val imagesSet1 = listOf(
+        R.drawable.iticonsand,
+        R.drawable.iticonsdolar,
+        R.drawable.iticonshash,
+        R.drawable.iticonslevazavorka,
+        R.drawable.iticonsminus,
+        R.drawable.iticonsplus,
+        R.drawable.iticonspodtrzitko,
+        R.drawable.iticonspravazavorka,
+        R.drawable.iticonsprocento,
+        R.drawable.iticonszavinac
+    )
+
+    // --- SADA 2: ČÍSLA ---
+    private val imagesSet2 = listOf(
+        R.drawable.numbericonsone,
+        R.drawable.numbericonstwo,
+        R.drawable.numbericonsthree,
+        R.drawable.numbericonsfour,
+        R.drawable.numbericonsfive,
+        R.drawable.numbericonssix,
+        R.drawable.numbericonsseven,
+        R.drawable.numbericonseight,
+        R.drawable.numbericonsnein,
+        R.drawable.numbericonsten
+    )
+
+    // --- SADA 3: BARVY ---
+    private val imagesSet3 = listOf(
+        R.drawable.colouriconsblack,
+        R.drawable.colouriconsblue,
+        R.drawable.colouriconsgreen,
+        R.drawable.colouriconsgrey,
+        R.drawable.colouriconsorange,
+        R.drawable.colouriconspink,
+        R.drawable.colouriconspurple,
+        R.drawable.colouriconsred,
+        R.drawable.colouriconswhite,
+        R.drawable.colouriconsyellow
     )
 
     private val _cards = MutableLiveData<List<MemoryCard>>()
@@ -50,7 +80,6 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     private val _lives = MutableLiveData<Int>(3)
     val lives: LiveData<Int> = _lives
 
-    // NOVÉ: Odpočet pro náhled (Memory mód)
     private val _previewTime = MutableLiveData<Int>(0)
     val previewTime: LiveData<Int> = _previewTime
 
@@ -84,16 +113,25 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         indexOfSingleSelectedCard = null
         isWaiting = false
         isPreviewing = false
-        _lives.value = 3
-        _previewTime.value = 0 // Reset odpočtu
+        _lives.value = if (gameMode == "MEMORY") 3 else 0
+        _previewTime.value = 0
         stopTimer()
 
         val totalCards = gameRows * gameCols
         totalPairsNeeded = totalCards / 2
 
+        val prefs = getApplication<Application>().getSharedPreferences("GAME_PREFS", Context.MODE_PRIVATE)
+        val selectedSet = prefs.getInt("CARD_SET", 1)
+
+        val sourceImages = when (selectedSet) {
+            2 -> imagesSet2
+            3 -> imagesSet3
+            else -> imagesSet1
+        }
+
         val availableImages = ArrayList<Int>()
         while (availableImages.size < totalPairsNeeded) {
-            availableImages.addAll(images)
+            availableImages.addAll(sourceImages)
         }
         val chosenImages = availableImages.take(totalPairsNeeded)
         val randomizedImages = (chosenImages + chosenImages).shuffled()
@@ -102,43 +140,34 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
             MemoryCard(id = index, imageId = imageId, isFaceUp = false, isMatched = false)
         }
 
-        // --- MÓD PAMĚŤ ---
         if (gameMode == "MEMORY") {
             _timeSeconds.value = 0
-
-            // Otočíme karty
             newCards = newCards.map { it.copy(isFaceUp = true) }
             _cards.value = newCards
 
             isPreviewing = true
             isGameRunning = false
 
-            // Cyklus pro odpočet (místo jednoho delay)
             viewModelScope.launch {
                 val previewDuration = gameTimeLimit.toInt()
-
-                // Odpočítáváme dolů: 5, 4, 3, 2, 1...
                 for (i in previewDuration downTo 1) {
                     _previewTime.postValue(i)
                     delay(1000)
                 }
-                _previewTime.postValue(0) // Konec odpočtu
+                _previewTime.postValue(0)
 
-                // Skryjeme karty
                 val hiddenCards = _cards.value!!.map { it.copy(isFaceUp = false) }
                 _cards.value = hiddenCards
 
                 isPreviewing = false
-                startTimer() // Spustíme herní čas
+                startTimer()
             }
         }
-        // --- MÓD ČASOVKA ---
         else if (gameMode == "TIME") {
             _cards.value = newCards
             _timeSeconds.value = gameTimeLimit
             startTimer()
         }
-        // --- KLASIKA ---
         else {
             _cards.value = newCards
             _timeSeconds.value = 0
@@ -172,17 +201,17 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
         timerJob?.cancel()
     }
 
-    fun flipCard(position: Int) {
-        val currentCards = _cards.value?.toMutableList() ?: return
+    fun flipCard(position: Int): Boolean {
+        val currentCards = _cards.value?.toMutableList() ?: return false
 
-        if (!isGameRunning && !isPreviewing) return
-        if (isPreviewing) return
-        if (isWaiting) return
-        if (position >= currentCards.size) return
+        if (!isGameRunning && !isPreviewing) return false
+        if (isPreviewing) return false
+        if (isWaiting) return false
+        if (position >= currentCards.size) return false
 
         val card = currentCards[position]
 
-        if (card.isFaceUp || card.isMatched) return
+        if (card.isFaceUp || card.isMatched) return false
 
         card.isFaceUp = true
         _cards.value = currentCards
@@ -195,6 +224,7 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
             checkForMatch(indexOfSingleSelectedCard!!, position, currentCards)
             indexOfSingleSelectedCard = null
         }
+        return true
     }
 
     private fun checkForMatch(pos1: Int, pos2: Int, currentCards: MutableList<MemoryCard>) {
@@ -212,7 +242,6 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
                 _isGameOver.value = true
             }
         } else {
-            // Chyba v módu Paměť
             if (gameMode == "MEMORY") {
                 val currentLives = _lives.value ?: 3
                 val newLives = currentLives - 1
@@ -240,14 +269,21 @@ class MemoryGameViewModel(application: Application) : AndroidViewModel(applicati
     private fun saveScoreToDb() {
         val currentMoves = _moves.value ?: 0
         val currentTime = _timeSeconds.value ?: 0
+
         val timePlayed = if (gameMode == "TIME") (gameTimeLimit - currentTime) else currentTime
+        val lives = if (gameMode == "MEMORY") (_lives.value ?: 0) else 0
 
         viewModelScope.launch {
             scoreDao.insert(
                 Score(
                     moves = currentMoves,
                     timeSeconds = timePlayed,
-                    timestamp = System.currentTimeMillis()
+                    timestamp = System.currentTimeMillis(),
+                    mode = gameMode,
+                    rows = gameRows,
+                    cols = gameCols,
+                    livesLeft = lives,
+                    timeLimit = gameTimeLimit
                 )
             )
         }
